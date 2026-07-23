@@ -14,6 +14,15 @@ spec:
     spec:
       containers:
       - name: petclinic
-        image: 450444046629.dkr.ecr.ap-southeast-1.amazonaws.com/user15-petclinic:latest
+        image: 450444046629.dkr.ecr.ap-southeast-1.amazonaws.com/user15-petclinic:v8
         ports:
         - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "mysql"
+        - name: MYSQL_URL
+          value: "jdbc:mysql://user15-db-mysql.cfyyeumii8qf.ap-southeast-1.rds.amazonaws.com/petclinic"
+        - name: MYSQL_USER
+          value: "admin"
+        - name: MYSQL_PASS
+          value: "Petclinic2026!"
