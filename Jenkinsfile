@@ -50,5 +50,20 @@ pipeline {
                 """
             }
         }
+
+        stage('Update Manifest & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'github-cred', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                    sh """
+                    sed -i "s|${ECR_REPO}:.*|${ECR_REPO}:${IMAGE_TAG}|" k8s/deployment.yaml
+                    git config user.email "jenkins@ci.local"
+                    git config user.name "Jenkins CI"
+                    git add k8s/deployment.yaml
+                    git commit -m "Update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes to commit"
+                    git push https://\${GIT_USER}:\${GIT_TOKEN}@github.com/iAmJunha/petclinic-cicd.git main
+                    """
+                }
+            }
+        }
     }
 }
