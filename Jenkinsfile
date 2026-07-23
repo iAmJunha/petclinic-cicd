@@ -21,9 +21,24 @@ pipeline {
                 sh './mvnw clean package -DskipTests'
             }
         }
-stage('Docker Build') {
+
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh './mvnw sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=petclinic'
+                }
+            }
+        }
+
+        stage('Docker Build') {
             steps {
                 sh "docker build -t ${ECR_REPO}:${IMAGE_TAG} ."
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                sh "trivy image --exit-code 0 --severity HIGH,CRITICAL ${ECR_REPO}:${IMAGE_TAG} || true"
             }
         }
 
