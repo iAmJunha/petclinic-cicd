@@ -60,7 +60,7 @@ pipeline {
                     git config user.name "Jenkins CI"
                     git add k8s/deployment.yaml
                     git commit -m "Update image tag to ${IMAGE_TAG} [ci skip]" || echo "No changes to commit"
-                    git push https://\${GIT_USER}:\${GIT_TOKEN}@github.com/iAmJunha/petclinic-cicd.git main
+                    git push https://\${GIT_USER}:\${GIT_TOKEN}@github.com/iAmJunha/petclinic-cicd.git HEAD:main
                     """
                 }
             }
